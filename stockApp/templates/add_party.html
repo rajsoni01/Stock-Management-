@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Party</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 900px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            width: 30%;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 65%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .form-check input {
+            margin-right: 10px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .buttons button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .save-new {
+            background-color: white;
+            color: blue;
+            border: 1px solid blue;
+        }
+
+        .save {
+            background-color: blue;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="container">
+            <h2>Add Party</h2>
+
+            <div class="form-group">
+                <label>Party Name*</label>
+                <input type="text" placeholder="Enter here" name="party_name">
+            </div>
+            <div class="form-group">
+                <label>Mobile Number</label>
+                <input type="text" placeholder="Enter here" name="mobile_number">
+            </div>
+            <div class="form-group">
+                <label>Opening Balance</label>
+                <input type="number"  name="opening_balance" value="0">
+                <select name="party_type">
+                    <option>receivable</option>
+                    <option>payable</option>
+                </select>
+            </div>
+
+            <h3>GST & PAN Details</h3>
+            <div class="form-group">
+                <label>GST Number</label>
+                <input type="text" placeholder="Enter here" name="gst_number">
+            </div>
+            <div class="form-group">
+                <label>PAN Number</label>
+                <input type="text" placeholder="Enter here" name="pan_number">
+            </div>
+
+            <h3>Billing Address</h3>
+            <div class="form-group">
+                <label>Billing Address</label>
+                <input type="text" placeholder="Enter here" name="billing_address">
+            </div>
+            <div class="form-group">
+                <label>Billing Pin Code</label>
+                <input type="text" placeholder="Enter here" name="billing_pincode">
+            </div>
+            <div class="form-group">
+                <label>Billing State</label>
+                <input type="text" placeholder="Enter here" name="billing_state">
+            </div>
+            <div class="form-check">
+                <input type="checkbox" checked>
+                <label>Shipping Address is same as Billing Address</label>
+            </div>
+
+            <h3>Bank Details</h3>
+            <div class="form-group">
+                <label>Account Holder Name</label>
+                <input type="text" placeholder="Enter here" name="acc_holder_name">
+            </div>
+            <div class="form-group">
+                <label>Bank Name</label>
+                <input type="text" placeholder="Enter here" name="bank_name">
+            </div>
+            <div class="form-group">
+                <label>Account Number</label>
+                <input type="text" placeholder="Enter here" name="acc_number">
+            </div>
+            <div class="form-group">
+                <label>IFSC Code</label>
+                <input type="text" placeholder="Enter here" name="ifsc_code">
+            </div>
+            <div class="form-group">
+                <label>Branch Name</label>
+                <input type="text" placeholder="Enter here" name="branch_name">
+            </div>
+
+            <div class="buttons">
+                <button class="save-new">Save & New</button> 
+                <button class="save">Save</button>
+            </div>
+        </div>
+    </form>
+</body>
+
+</html>

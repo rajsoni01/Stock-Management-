@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Entry</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        .container {
+            max-width: 900px;
+            margin-top: 20px;
+        }
+
+        .delete-btn,
+        .remove-btn {
+            color: red;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover,
+        .remove-btn:hover {
+            color: darkred;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+    </style>
+</head>
+
+<body onload="setDateTime()">
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="container">
+            <h3>Create Purchase Entry</h3>
+
+            
+           
+            <div class="mb-3">
+                <label class="form-label">Party</label>
+                <select class="form-control" id="party" name="party">
+                    <option>{{purachse_data.party_name}}</option>
+                    {% for parties in party %}
+                    <option>{{parties.party_name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Entry No.</label>
+                    <input type="text" class="form-control" value="P 2" readonly name="entry_no">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Entry Date</label>
+                    <input type="date" class="form-control" id="entryDate" name="date">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Entry Time</label>
+                    <input type="time" class="form-control" id="entryTime" name="time">
+                </div>
+            </div>
+
+            <h5>Items</h5>
+            <table class="table table-bordered" id="itemsTable">
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+
+                {% for bill in purchase_data.items.all %}
+
+                <td>
+                    <select name="item" class="form-control item-name">
+                        <option>{{bill.item_name}} </option>
+                        {% for item in product %}
+                        <option>{{item.item_name}}</option>
+                        {% endfor %}
+    
+                    </select>
+                </td>
+                <td><textarea class="form-control item-description" name="description">{{ bill.description }}</textarea></td>
+                <td><input type="number" class="form-control qty" value="{{ bill.quantity }}" min="1" oninput="updateAmount(this)"
+                        name="item_qty"></td>
+                <td><input type="number" class="form-control price" value="{{ bill.purchase_price }}" min="1" oninput="updateAmount(this)"
+                        name="item_price"></td>
+                <td><input type="text" class="form-control amount"  readonly name="item_total_price" value"{{ bill.amount }}"></td>
+                <td class="action-buttons">
+                    <button class="btn btn-danger btn-sm remove-btn" onclick="deleteItem(this)">Remove</button>
+                </td>
+                {% endfor %}
+
+                <tbody id="itemsBody"></tbody>
+            </table>
+            <button class="btn btn-primary" onclick="addItem()">Add Item</button>
+
+            <h5 class="mt-3">Summary</h5>
+            <table class="table">
+                <tr>
+                    <td>Total Quantity</td>
+                    <td><input type="number" class="form-control" id="totalQty" readonly name="total_qty"></td>
+                    <td>Total Amount</td>
+                    <td><input type="text" class="form-control" id="totalAmount" readonly name="total_amount"></td>
+                </tr>
+                <tr>
+                    <td>Paid Amount</td>
+                    <td colspan="2">
+                        <input type="number" class="form-control" id="paidAmount" oninput="updateBalance()"
+                            name="paid_amount">
+                    </td>
+                    <td>
+                        <input type="checkbox" id="fullPaid" onclick="setFullPaid()"> Full Paid
+                    </td>
+                </tr>
+                <tr>
+                    <td>Due Balance</td>
+                    <td colspan="3"><input type="text" class="form-control" id="dueBalance" readonly name="due_amount">
+                    </td>
+                </tr>
+            </table>
+
+            <button class="btn btn-success">Save</button>
+
+
+
+
+
+
+        </div>
+    </form>
+
+    <script>
+        function setDateTime() {
+            const now = new Date();
+            const date = now.toISOString().split('T')[0];
+            const time = now.toTimeString().split(':').slice(0, 2).join(':');
+
+            document.getElementById('entryDate').value = date;
+            document.getElementById('entryTime').value = time;
+        }
+
+        function addItem() {
+            const table = document.getElementById('itemsBody');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+
+
+
+                <td>
+                <select name="item" class="form-control item-name">
+                    <option>Select items </option>
+                    {% for item in product %}
+                    <option>{{item.item_name}}</option>
+                    {% endfor %}
+
+                </select>
+            </td>
+            <td><textarea class="form-control item-description" name="description"></textarea></td>
+            <td><input type="number" class="form-control qty" value="1" min="1" oninput="updateAmount(this)"
+                    name="item_qty"></td>
+            <td><input type="number" class="form-control price" value="0" min="1" oninput="updateAmount(this)"
+                    name="item_price"></td>
+            <td><input type="text" class="form-control amount"  readonly name="item_total_price"></td>
+            <td class="action-buttons">
+                <button class="btn btn-danger btn-sm remove-btn" onclick="deleteItem(this)">Remove</button>
+            </td>
+
+
+
+
+
+            `;
+            table.appendChild(row);
+            updateSummary();
+        }
+
+        function updateAmount(input) {
+            const row = input.closest('tr');
+            const qty = row.querySelector('.qty').value;
+            const price = row.querySelector('.price').value;
+            const amount = qty * price;
+            row.querySelector('.amount').value = `Rs. ${amount}`;
+            updateSummary();
+        }
+
+        function deleteItem(element) {
+            element.closest('tr').remove();
+            updateSummary();
+        }
+
+        function updateSummary() {
+            let totalQty = 0;
+            let totalAmount = 0;
+            document.querySelectorAll('#itemsBody tr').forEach(row => {
+                totalQty += parseInt(row.querySelector('.qty').value);
+                totalAmount += parseInt(row.querySelector('.amount').value.replace('Rs. ', ''));
+            });
+            document.getElementById('totalQty').value = totalQty;
+            document.getElementById('totalAmount').value = `Rs. ${totalAmount}`;
+            updateBalance();
+        }
+
+        function updateBalance() {
+            const totalAmount = parseInt(document.getElementById('totalAmount').value.replace('Rs. ', '')) || 0;
+            let paidAmount = parseInt(document.getElementById('paidAmount').value) || 0;
+            if (paidAmount > totalAmount) {
+                document.getElementById('paidAmount').value = totalAmount;
+                paidAmount = totalAmount;
+            }
+            document.getElementById('dueBalance').value = `Rs. ${totalAmount - paidAmount}`;
+        }
+
+        function setFullPaid() {
+            const totalAmount = parseInt(document.getElementById('totalAmount').value.replace('Rs. ', '')) || 0;
+            const checkBox = document.getElementById('fullPaid');
+            if (checkBox.checked) {
+                document.getElementById('paidAmount').value = totalAmount;
+            } else {
+                document.getElementById('paidAmount').value = "";
+            }
+            updateBalance();
+        }
+    </script>
+</body>
+
+</html>

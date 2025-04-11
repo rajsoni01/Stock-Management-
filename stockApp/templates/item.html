@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        .balance-payable {
+            color: red;
+        }
+        .balance-receivable {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Stock Value Section -->
+        <div class="row mb-3">
+            <div class="col-12 col-md-6">
+                <div class="p-3 border rounded bg-light text-center">
+                    <strong>Total Stock Value (Purchase)</strong>
+                    <p class="text-danger">&#8377; 0</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="p-3 border rounded bg-light text-center">
+                    <strong>Total Stock Value (Sale)</strong>
+                    <p class="text-success">&#8377; 0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Add Button -->
+        <div class="row mb-3 align-items-center">
+            <div class="col-12 col-md-6">
+                <input type="text" class="form-control" id="search" placeholder="Search Item Name">
+            </div>
+            <div class="col-12 col-md-6 text-md-end text-center mt-2 mt-md-0">
+                <a href="/add_items">
+                    <button class="btn btn-primary">Add Items </button>
+                </a>
+            </div>
+        </div>
+
+        <!-- Responsive Table -->
+        <div class="table-responsive">
+            <table class="table mt-3">
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Remaining Stock</th>
+                        {% comment %} <th>Purchase Price</th> {% endcomment %}
+                        <th>Stock Value (Purchase)</th>
+                        <th>Selling Price</th>
+                        <th>Stock Value (Sales)</th>
+                        <th>Edit / Delete</th>
+                    </tr>
+                </thead>
+                <tbody id="partyTable">
+                    {% for items in item %}
+                    <tr>
+                        <td>{{items.item_name}}</td>
+                        <td>0</td>
+                        {% comment %} <td>&#8377; {{items.purchase_price}}</td> {% endcomment %}
+                        <td>0</td>
+                        <td>&#8377;{{items.selling_price}}</td>
+                        <td>0</td>
+                       
+                        <td>
+
+                            <a href="update_party/{{items.id }}">
+                                <button type="button" class="btn btn-primary btn-sm">Edit</button>
+                            </a>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                Delete
+                            </button>
+                            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-danger text-white">
+                                            <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class="mb-0">Are you sure you want to delete this item? This action cannot be undone.</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <a href="/delete_item/{{items.id}}">
+                                            <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                           
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer class="text-center mt-5">
+        <p>Contact <a href="#">Stock Management</a> for any help</p>
+        <p>
+            📞 +91 987654125 &nbsp;
+            📱 +91 987654321 &nbsp;
+            ✉️ contact@stockmanagement.in
+        </p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

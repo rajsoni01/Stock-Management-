@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .scrollable-table {
+            max-height: 500px;
+            /* Adjust height */
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>   
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Left Panel (Add Category) -->
+            <div class="col-md-4">
+                <h4>Add New Category</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="categoryName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="categoryName" placeholder="Enter category name"
+                            name="category_name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="categoryDesc" class="form-label">Description</label>
+                        <textarea class="form-control" id="categoryDesc" rows="3" placeholder="Enter description"
+                            name="category_description"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Category</button>
+                </form>
+            </div>
+
+            <!-- Right Panel (Category List) -->
+            <div class="col-md-8">
+                <h4>Product Categories</h4>
+                <div class="scrollable-table border rounded p-3">
+                    <table class="table table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Count</th>
+                                <th>Edit/Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cate in category %}
+                            <tr>
+                                <td>{{cate.category_name}}</td>
+                                <td>{{cate.category_description}}</td>
+                                <td>0</td>
+                                <td>
+                                    <a href="/update_item_category/{{cate.id}}">
+                                    <button type="button" class="btn btn-primary" >
+                                        Edit
+                                    </button>
+                                </a>
+
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal">
+                                        Delete
+                                    </button>
+                                    <div class="modal fade" id="deleteModal" tabindex="-1"
+                                        aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-danger text-white">
+                                                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                                                    <button type="button" class="btn-close btn-close-white"
+                                                        data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p class="mb-0">Are you sure you want to delete this item category?
+                                                        This action cannot be undone.</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Cancel</button>
+                                                    <a href="/delete_item_category/{{cate.id}}">
+                                                        <button type="button" class="btn btn-danger"
+                                                            id="confirmDelete">Delete</button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            {% endfor %}
+                            <!-- <tr>
+                                <td>Adjustable Downlighters</td>
+                                <td>adjustable-downlighters</td>
+                                <td>108</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary">Edit</button>
+                                <button type="button" class="btn btn-danger">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Curve Magic Line</td>
+                                <td>curve-magic-line</td>
+                                <td>8</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary">Edit</button>
+                                <button type="button" class="btn btn-danger">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Fixed Down Lighters</td>
+                                <td>fixed-down-lighters</td>
+                                <td>103</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary">Edit</button>
+                                <button type="button" class="btn btn-danger">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Linear Downlighters</td>
+                                <td>linear-downlighters</td>
+                                <td>31</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary">Edit</button>
+                                <button type="button" class="btn btn-danger">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Luemin Downlighter</td>
+                                <td>luemin-downlighter</td>
+                                <td>56</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary">Edit</button>
+                                <button type="button" class="btn btn-danger">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Luemin Profile Lights</td>
+                                <td>luemin-profile-lights</td>
+                                <td>14</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary">Edit</button>
+                                <button type="button" class="btn btn-danger">Delete</button>
+                                </td>
+                            </tr> -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Party Management</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        .balance-payable {
+            color: red;
+        }
+        .balance-receivable {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="p-3 border rounded bg-light">
+                    <strong>Total Payable</strong>
+                    <p class="text-danger">&#8377; 0</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3 border rounded bg-light">
+                    <strong>Total Receivable</strong>
+                    <p class="text-success">&#8377; 0</p>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="search" placeholder="Search party Name">
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" id="filter">
+                    <option value="all">Show All Parties</option>
+                    <option value="payable">Payable Parties</option>
+                    <option value="receivable">Receivable Parties</option>
+                </select>
+            </div>
+            <div class="col-md-3 text-end">
+                <a href="/add">
+                <button class="btn btn-primary">Add Party</button>
+                </a>
+            </div>
+        </div>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" onclick="showParties('all')">All Parties</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showParties('payable')">Payable Parties</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showParties('receivable')">Receivable Parties</a>
+            </li>
+        </ul>
+        <table class="table mt-3">
+            <thead>
+                <tr>
+                    <th>Party name</th>
+                    <th>Mobile number</th>
+                    <th>Balance</th>
+                    <th>Edit / Delete</th>
+                </tr>
+            </thead>
+            <tbody id="partyTable">
+
+
+
+
+                {% for party in party_data %}
+                
+                <tr class="party" data-type="{{party.party_type}}">
+                    <td>{{party.party_name}}</td>
+                    <td>{{party.number}}</td>
+                    <td class="balance-payable">&#8377; {{party.opening_balance}} ({{party.party_type}})</td>
+                    <td>
+
+                        <a href="update_party/{{party.id }}">
+                        <button type="button" class="btn btn-primary">Edit</button>
+                        </a>
+
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            Delete
+                        </button>
+                        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-danger text-white">
+                                        <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p class="mb-0">Are you sure you want to delete this party? This action cannot be undone.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <a href="/delete_party/{{party.id}}">
+                                        <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    </td>
+                    
+                </tr>
+                {% endfor %}
+
+
+{% comment %} 
+                <tr class="party" data-type="receivable">
+                    <td>Rahul</td>
+                    <td>9876543210</td>
+                    <td class="balance-receivable">&#8377; 1000 (Receivable)</td>
+                </tr> {% endcomment %}
+
+
+            </tbody>
+        </table>
+    </div>
+
+  
+    
+   
+
+
+
+ 
+    <footer class="text-center mt-5">
+        <p>Contact <a href="#">Stock Management</a> for any help</p>
+        <p>
+            📞 +91 987654125 &nbsp;
+            📱 +91 987654321 &nbsp;
+            ✉️ contact@stockmanagement.in
+        </p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showParties(type) {
+            let rows = document.querySelectorAll('.party');
+            rows.forEach(row => {
+                if (type === 'all' || row.dataset.type === type) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

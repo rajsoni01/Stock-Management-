@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Bills Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .tab-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-tabs .nav-link {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: #fff;
+            background-color: #007bff;
+            border-radius: 5px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <button class="btn btn-primary">Raj's</button>
+            <div>
+                <input type="date" class="form-control d-inline w-auto">
+                <input type="text" class="form-control d-inline w-auto" placeholder="Search by party name">
+                <button class="btn btn-secondary">Report</button>
+                <button class="btn btn-danger" disabled>Bill Setting</button>
+                <a href="add_purchase">
+                    <button class="btn btn-primary">Create Purchase Bill</button>
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card p-3 text-center">
+                    <h6>Total Purchase</h6>
+                    <h4 class="text-success">₹ 50,000</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-3 text-center">
+                    <h6>Total Due Amount</h6>
+                    <h4 class="text-danger">₹ 15,000</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-3 text-center">
+                    <h6>Total Paid Amount</h6>
+                    <h4 class="text-muted">₹ 35,000</h4>
+                </div>
+            </div>
+        </div>
+        <ul class="nav nav-tabs mt-4" id="salesTabs">
+            <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#allSales">All Purchase Bills</a>
+            </li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#unpaid">Unpaid & Partially Paid
+                    Bills</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#paid">Paid Bills</a></li>
+            <li>
+
+        </ul>
+
+
+        {% comment %} all enrty {% endcomment %}
+
+
+
+        <div class="tab-content mt-3">
+            <div id="allSales" class="tab-pane fade show active">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Bill No</th>
+                            <th>Party Name</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>View Bills</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+
+
+                        {% for purchase in purchase_data %}
+
+                            <tr>
+                                <td>{{ purchase.Entry_no}}</td>
+                                <td>{{ purchase.party_name }}</td>
+                                <td>₹ {{ purchase.total_amount }}</td>
+
+                                {% if purchase.due_amount > 0 and purchase.due_amount < purchase.total_amount %} <td
+                                    class="text-warning">Partially Paid (₹ {{purchase.paid_amount}})</td>
+
+
+                                    {% elif purchase.due_amount == purchase.total_amount %}
+
+                                    <td class="text-danger">Unpaid</td>
+                                    {% else %}
+
+                                    <td class="text-success">Paid</td>
+
+                                    {% endif %}
+                                    <td>
+                                        <a href="view_purchase/{{purchase.id}}">
+                                        <button type="button" class="btn btn-primary">View</button>
+                                    </a>
+                                    </td>
+
+                            </tr>
+                        
+                        {% endfor %}
+
+
+
+                    </tbody>
+                </table>
+            </div>
+
+
+
+
+            <div id="unpaid" class="tab-pane fade">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Bill No</th>
+                            <th>Party Name</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>View Bills</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for purchase in purchase_data %}
+
+
+                        {% if purchase.due_amount > 0 %}
+
+
+
+                            <tr>
+                                <td>{{ purchase.Entry_no}}</td>
+                                <td>{{ purchase.party_name }}</td>
+                                <td>₹ {{ purchase.total_amount }}</td>
+
+                                {% if purchase.due_amount > 0 and purchase.due_amount < purchase.total_amount %} <td
+                                    class="text-warning">Partially Paid (₹ {{purchase.paid_amount}})</td>
+
+
+                                    {% elif purchase.due_amount == purchase.total_amount %}
+
+                                    <td class="text-danger">Unpaid</td>
+                                    {% endif %}
+                                    <td>
+                                        <a href="view_purchase/{{purchase.id}}">
+                                        <button type="button" class="btn btn-primary">View</button>
+                                    </a>
+                                    </td>
+
+
+                            </tr>
+
+
+                        {% endif %}
+                        {% endfor %}
+
+
+
+                    </tbody>
+                </table>
+            </div>
+            <div id="paid" class="tab-pane fade">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Bill No</th>
+                            <th>Party Name</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>View Bills</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+
+
+                        {% for purchase in purchase_data %}
+                        
+
+                            {% if purchase.paid_amount == purchase.total_amount %}
+
+
+
+                            <tr>
+                                <td>{{ purchase.Entry_no}}</td>
+                                <td>{{ purchase.party_name }}</td>
+                                <td>₹ {{ purchase.total_amount }}</td>
+                                <td class="text-success">Paid</td>
+                                <td>
+                                    <a href="view_purchase/{{purchase.id}}">
+                                    <button type="button" class="btn btn-primary">View</button>
+                                </a>
+                                </td>
+
+                            </tr>
+                            {% endif %}
+                        
+                        {% endfor %}
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
