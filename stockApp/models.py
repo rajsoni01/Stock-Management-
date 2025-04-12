@@ -78,7 +78,7 @@ class purchase_items(models.Model):  # ✅ Fixed typo (it was "purchase_itmes")
         return f"{self.item_name} (x{self.quantity}) - Bill {self.bill.Entry_no}"
 
 
-
+# this is for only working test
 
 
 
